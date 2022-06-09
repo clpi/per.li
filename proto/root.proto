@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package perli;
+
+import "google/protobuf/timestamp.proto";
+
+message User {
+    enum PhoneType {
+        MOBILE = 0;
+        HOME = 1;
+        WORK = 2;
+    }
+
+    enum AccountStatus {
+        IDLE = 0;
+        PENDING = 1;
+        ACTIVFE = 2;
+        SUSPENDED = 3;
+        CLOSED = 4;
+    }
+
+    message PhoneNumber {
+        string number = 1;
+        PhoneType type = 2;
+    }
+    
+    string id = 1;
+    Credentials credentials = 2;
+    Profile profile = 3;
+    Access access = 4;
+    AccountStatus status = 5;
+    google.protobuf.Timestamp created = 6;
+
+    message Credentials {
+        oneof signin_methods {
+            string email = 1;
+            string username = 2;
+        }
+        string password = 3;
+        string userId = 4;
+        google.protobuf.Timestamp updated = 5;
+    }
+
+    message Profile {
+        optional string bio = 1;
+        optional string gender = 2;
+        optional string birthdate = 3;
+        optional string country = 4;
+        optional string name = 5;
+        optional string city = 6;
+        optional string picture = 7;
+        optional PhoneNumber phoneNumber = 8;
+        optional string website = 9;
+        string userId = 10;
+        google.protobuf.Timestamp updated = 11;
+    }
+
+    enum SiteAccess {
+        USER = 0;
+        CONTRIBUTOR = 1;
+        MODERATOR = 2;
+        ADMINISTRATOR = 3;
+    }
+
+    message Access {
+        SiteAccess access = 1;
+        string userId = 2;
+        google.protobuf.Timestamp updated = 3;
+    }
+
+}
+
+message Group {
+    string id = 1;
+    string title = 2;
+    string bio = 3;
+    repeated User users = 4;
+    google.protobuf.Timestamp created = 5;
+    google.protobuf.Timestamp updated = 6;
+    
+}
+
+message Language {
+    string id  = 1;
+}
