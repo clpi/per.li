@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 pub mod app;
 pub mod auth;
 pub mod code;
@@ -43,6 +45,7 @@ async fn main() -> AxumResult<()> {
         .nest("/languages", lang::routes())
         .nest("/code", code::routes())
         .layer(Extension(db))
+        .layer(Extension(tower_cookies::CookieManagerLayer::new()))
         .layer(Extension(store));
 
     let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 3001));
