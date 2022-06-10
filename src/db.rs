@@ -10,7 +10,7 @@ use sqlx::{
 };
 
 #[derive(Debug, Clone)]
-pub struct Db(Pool<Postgres>);
+pub struct Db(pub Pool<Postgres>);
 impl Db {
     pub async fn new() -> sqlx::Result<Self> {
         let db = PgPoolOptions::new()

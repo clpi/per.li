@@ -1,35 +1,39 @@
-use crate::models::user::User;
-
 use super::{auth, code, db, lang, rt, user};
+use crate::models::user::User;
 use async_session::{MemoryStore, Session, SessionStore};
 use axum::{Extension, Router};
-use axum_database_sessions::{AxumSession, AxumSessionConfig, AxumSessionStore, AxumDatabasePool, AxumSessionLayer};
+use axum_database_sessions::{
+    AxumDatabasePool, AxumSession, AxumSessionConfig, AxumSessionLayer, AxumSessionStore,
+};
+use axum_sessions_auth::{
+    Auth, AuthSession, AuthSessionLayer, AuthSessionService, Authentication, HasPermission,
+};
+use sqlx::{
+    postgres::{PgConnectionInfo, PgPoolOptions},
+    ConnectOptions,
+};
+use std::convert::{TruFrom, TryInfo};
 use std::{net::SocketAddr, ops::Deref};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-use axum_sessions_auth::{
-    HasPermission, Authentication, Auth, AuthSession, AuthSessionLayer,
-    AuthSessionService
-};
-use sqlx::{ConnectOptions, postgres::{PgPoolOptions, PgConnectionInfo}}
 
 pub struct App {
     pub routes: Router,
     pub db: db::Db,
     pub addr: SocketAddr,
 }
+
 impl App {
     pub async fn init() -> Result<Self, axum::Error> {
         Self::init_tracing();
-        let db = db::Db::new().await.expect("Could not get DB conn");
+        let db: db::Db = db::Db::new().await.expect("Could not get DB conn");
         tracing::debug!("Got db conn!");
 
         let mem_store = MemoryStore::new();
         let sessions = AxumSessionConfig::default()
             .with_secure(true)
-            .with_table_name("User")
-            .with_cookie_domain("PERLI");
+            .with_table_name("User");
         // let pgpool = |db| { db.deref().clone() };
-        let dbpool = Some(AxumDatabasePool(pgpool(db.deref().clone())));
+        let dbpool = Some(AxumDatabasePool(db.clone().deref()));
         let sess_store = AxumSessionStore::new(dbpool, sessions);
 
         let app = Router::new()
