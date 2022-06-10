@@ -23,7 +23,7 @@ message User {
         string number = 1;
         PhoneType type = 2;
     }
-    
+
     string id = 1;
     Credentials credentials = 2;
     Profile profile = 3;
@@ -77,7 +77,7 @@ message Group {
     repeated User users = 4;
     google.protobuf.Timestamp created = 5;
     google.protobuf.Timestamp updated = 6;
-    
+
 }
 
 message Language {

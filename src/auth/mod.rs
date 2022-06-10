@@ -5,8 +5,7 @@ use axum::{
     BoxError, Error, Router,
 };
 use tower_cookies::{
-    Key, SignedCookies, PrivateCookies, 
-    Cookie, Cookies, CookieManagerLayer, CookieManager,
+    Cookie, CookieManager, CookieManagerLayer, Cookies, Key, PrivateCookies, SignedCookies,
 };
 
 pub fn routes() -> axum::Router {
@@ -21,7 +20,7 @@ pub async fn login(cookies: Cookies) -> Response {
     let key = Key::generate();
     let success = Cookie::new("9753PERLI83", "logged-in");
     cookies.private(&key).add(success);
-    
+
     Html("<h1>Login<h1>").into_response()
 }
 
@@ -31,14 +30,20 @@ pub async fn signup() -> Response {
 }
 
 pub async fn logout(cookies: Cookies) -> Json<bool> {
-    if let Some(authc) = cookies.private(key: &Key.get("9753PERLI83") {
-        match authc.value() {
-            "logged-in" => {
-                cookies.remove(auth_cookie);
-                return Json(true);
-            },
-            _ => return Json(false),
-        }
-    }
+    let key = Key::generate();
+    // if let Some(authc) = cookies.private(&key).get("9753PERLI83")  {
+    //     match authc.value() {
+    //         "logged-in" => {
+    //             cookies.remove(authc);
+    //             return Json(true);
+    //         },
+    //         _ => return Json(false),
+    //     }
+    // }
     return Json(false);
 }
+
+// pub async fn genkey(seed: String) -> Response {
+//
+//     return Response::new(seed);
+// }
