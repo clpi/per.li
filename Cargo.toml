@@ -19,13 +19,17 @@ petgraph = { version = "0.6.2", features = ["serde-1", "generate"] }
 uuid = { version = "1.1.1", features = ["serde", "v4"] }
 futures = "0.3.21"
 sqlx = { version = "0.5.13", features = ["runtime-tokio-rustls", "postgres", "uuid", "time"] }
-time = { version = "0.3.9", features = ["serde", "serde-human-readable", "serde-well-known", "parsing", "local-offset"] }
 argon2 = "0.4.0"
 async-session = "3.0.0"
 tower-cookies = { version = "0.6.0", features = ["private", "signed"] }
 axum_sessions_auth = "1.4.0"
 axum_database_sessions = "2.0.1"
 rustls = "0.20.6"
+async-trait = "0.1.56"
+
+[dependencies.time]
+version = "0.3.9"
+features = ["serde", "serde-human-readable", "serde-well-known", "parsing", "local-offset", "macros"]
 
 [dependencies.tower]
 version = "0.4"

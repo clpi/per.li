@@ -90,6 +90,7 @@ version = "0.1.0"
 dependencies = [
  "argon2",
  "async-session",
+ "async-trait",
  "axum",
  "axum_database_sessions",
  "axum_sessions_auth",

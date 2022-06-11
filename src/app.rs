@@ -12,29 +12,24 @@ use sqlx::{
     postgres::{PgConnectionInfo, PgPoolOptions},
     ConnectOptions,
 };
-use std::convert::{TruFrom, TryInfo};
 use std::{net::SocketAddr, ops::Deref};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 pub struct App {
     pub routes: Router,
-    pub db: db::Db,
+    // pub db: db::Db,
     pub addr: SocketAddr,
 }
 
 impl App {
-    pub async fn init() -> Result<Self, axum::Error> {
+    pub async fn init() -> Result<Self, Box<dyn std::error::Error>> {
         Self::init_tracing();
         let db: db::Db = db::Db::new().await.expect("Could not get DB conn");
         tracing::debug!("Got db conn!");
 
         let mem_store = MemoryStore::new();
-        let sessions = AxumSessionConfig::default()
-            .with_secure(true)
-            .with_table_name("User");
+        let sessions: AxumSessionStore = db.clone().into();
         // let pgpool = |db| { db.deref().clone() };
-        let dbpool = Some(AxumDatabasePool(db.clone().deref()));
-        let sess_store = AxumSessionStore::new(dbpool, sessions);
 
         let app = Router::new()
             .nest("/user", user::routes())
@@ -44,15 +39,15 @@ impl App {
             .nest("/code", code::routes())
             .layer(Extension(tower_cookies::CookieManagerLayer::new()))
             .layer(Extension(mem_store))
-            .layer(AxumSessionLayer::new(sess_store))
-            .layer(AuthSessionLayer::<User>::new(dbpool, None));
+            .layer(AxumSessionLayer::new(sessions))
+            .layer(AuthSessionLayer::<User>::new(Some(db.clone().into()), None));
 
         let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 3001));
         tracing::debug!("Listening on {}", addr);
         Ok(Self {
             routes: app,
             addr,
-            db,
+            // db,
         })
     }
 

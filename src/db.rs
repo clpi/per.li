@@ -3,6 +3,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use axum_database_sessions::{AxumDatabasePool, AxumSessionConfig, AxumSessionStore, AxumSessionMode};
 use sqlx::{
     migrate::{Migrate, MigrateDatabase, Migrator},
     postgres::{PgConnectOptions, PgConnection, PgPoolOptions, Postgres},
@@ -24,6 +25,7 @@ impl Db {
     pub fn db_url() -> String {
         std::env::var("DATABASE_URL").expect("Must have DATABASE_URL envvar set")
     }
+
     pub async fn migrate(db: &Pool<Postgres>) -> sqlx::Result<()> {
         Migrator::new(PathBuf::from("data/migrate"))
             .await?
@@ -37,5 +39,19 @@ impl std::ops::Deref for Db {
     type Target = Pool<Postgres>;
     fn deref(&self) -> &Self::Target {
         return &self.0;
+    }
+}
+impl Into<AxumDatabasePool> for Db {
+    fn into(self) -> AxumDatabasePool {
+        AxumDatabasePool::from(self.0)
+    }
+}
+impl Into<AxumSessionStore> for Db {
+    fn into(self) -> AxumSessionStore {
+        let dbpool: AxumDatabasePool = self.into();
+        let sessions = AxumSessionConfig::default()
+            .with_secure(true)
+            .with_table_name("User");
+        AxumSessionStore::new(Some(dbpool), sessions)
     }
 }
