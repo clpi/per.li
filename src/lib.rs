@@ -1,13 +1,13 @@
 #![allow(unused)]
 #![feature(ready_macro)]
 
-pub mod models;
 pub mod app;
 pub mod auth;
 pub mod code;
 pub mod config;
 pub mod db;
 pub mod lang;
+pub mod models;
 pub mod rt;
 pub mod user;
 

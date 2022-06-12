@@ -18,14 +18,20 @@ hyper = { version = "0.14.19", features = ["http2", "http1"] }
 petgraph = { version = "0.6.2", features = ["serde-1", "generate"] }
 uuid = { version = "1.1.1", features = ["serde", "v4"] }
 futures = "0.3.21"
-sqlx = { version = "0.5.13", features = ["runtime-tokio-rustls", "postgres", "uuid", "time"] }
 argon2 = "0.4.0"
 async-session = "3.0.0"
-tower-cookies = { version = "0.6.0", features = ["private", "signed"] }
+tower-cookies = { version = "0.7.0", features = ["private", "signed"] }
 axum_sessions_auth = "1.4.0"
 axum_database_sessions = "2.0.1"
 rustls = "0.20.6"
 async-trait = "0.1.56"
+validator = { version = "0.15.0", features = ["validator_derive", "unic", "phone", "phonenumber", "indexmap", "derive", "card"] }
+smol_str = { version = "0.1.23", features = ["serde"] }
+tokio-postgres = { version = "0.7.6", features = ["with-serde_json-1", "with-uuid-1", "array-impls", "with-time-0_3", "with-bit-vec-0_6"] }
+bit-vec = { version = "0.6.3", features = ["serde"] }
+deadpool = { version = "0.9.5", features = ["rt_tokio_1", "serde"] }
+deadpool-postgres = { version = "0.10.2", features = ["serde_1", "serde"] }
+sqlx = { version = "0.5.13", features = ["uuid", "time", "json", "runtime-tokio-rustls", "postgres", "any", "bit-vec"] }
 
 [dependencies.time]
 version = "0.3.9"

@@ -1,3 +1,5 @@
+pub mod chat;
+
 use axum::{
     extract::{
         ws::{Message, WebSocket},

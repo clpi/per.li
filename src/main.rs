@@ -1,12 +1,13 @@
 #![allow(unused)]
+#![feature(ready_macro)]
 
-pub mod models;
 pub mod app;
 pub mod auth;
 pub mod code;
 pub mod config;
 pub mod db;
 pub mod lang;
+pub mod models;
 pub mod rt;
 pub mod user;
 
@@ -26,7 +27,7 @@ use tonic::{
 pub type AxumResult<T> = Result<T, axum::Error>;
 
 #[tokio::main]
-async fn main() -> AxumResult<()> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let app = app::App::init().await?;
     app.serve().await?;
 

@@ -6,9 +6,10 @@ use axum::{
 use tonic::server::Grpc;
 
 pub fn routes() -> axum::Router {
-    Router::new().route("/index", get(get_user_index))
+    Router::new()
+        .route("/", get(users))
 }
 
-pub async fn get_user_index() -> Response {
+pub async fn users() -> Response {
     Html("<h1>User index</h1>").into_response()
 }
